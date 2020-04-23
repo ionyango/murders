@@ -26,3 +26,4 @@ head(murders_rank)
 ## Number of deaths occuring in Northeast and West only
 murders_nw<-filter(murders_rank,population<5000000 & region %in% c("Northeast", "West"))
 head(murders_nw)
+add new codes
