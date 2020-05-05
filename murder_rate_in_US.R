@@ -1,7 +1,11 @@
+install.packages(ggthemes)
 library(tidyverse)
 library(dslabs)
 library(dplyr)
 library(purrr)
+library(readxl)
+library(ggthemes)
+library(ggrepel)
 
 ##importing built in data. Murders in the US
 data (murders)
@@ -52,3 +56,49 @@ compute_s_n <- function(n){
 
 n <- 1:100
 s_n <- map_df(n, compute_s_n)
+
+##Copying data file 
+filename <- "murders.csv"
+dir <- system.file("extdata", package = "dslabs") 
+fullpath <- file.path(dir, filename)
+
+file.copy(fullpath, "murders.csv")
+
+list.files()
+
+#Importing data files
+
+read_lines("murders.csv",n_max = 3)
+dat<- read.csv("murders.csv")
+
+## Visualizing data using ggplot
+murders %>% ggplot() + geom_point(aes(x=population/10^6, y=total))
+
+p<-murders %>% ggplot(aes(population/10^6, total, label = abb))
+
+## Reference line - Average murder rate in the US
+r<- murders %>% summarise(rate= sum(total)/sum(population)*10^6)%>% pull(rate)
+
+##ggplot with reference line
+p<-p + geom_point(aes(col=region),size=3) + geom_text_repel(nudge_x=0.05) + scale_x_log10() + scale_y_log10() + 
+  xlab("Population in millions (log scale)") + ylab("Total number of murders (log scale)") + 
+  ggtitle("US gun murders in 2010") + geom_abline(intercept = log10(r),lty=2, color = "darkgrey")
+
+##ggplot with theme
+p+theme_economist()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
